@@ -1,4 +1,8 @@
 <?php
-    include_once($_SERVER['DOCUMENT_ROOT'] .'/core/system/autoloader.php');
+include_once($_SERVER['DOCUMENT_ROOT'] .'/core/System/autoloader.php');
 
-    Entity\WargamingStats\WoT\CAccount::_api();
+$APPLICATION = Core\CApplication::getInstance();
+
+var_dump($APPLICATION);
+
+Entity\WargamingStats\WoT\CAccount::_api();
