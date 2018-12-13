@@ -7,6 +7,7 @@ namespace Core;
 final class CApplication
 {
     private static $instance;
+    private  $_CONFIGURATION = [];
 
     /**
      * @return CApplication
@@ -22,6 +23,7 @@ final class CApplication
 
     private function __construct()
     {
+        $this->_CONFIGURATION = $this->_loadConfiguration();
     }
 
     private function __clone()
@@ -30,5 +32,21 @@ final class CApplication
 
     private function __wakeup()
     {
+    }
+
+    private function _loadConfiguration()
+    {
+        include_once(_DOCUMENT_ROOT_ .'/core/config.php');
+
+        $result = $_APP_;
+
+        return $result;
+    }
+
+    public function getConfiguration() 
+    {
+        $result = $this->_CONFIGURATION;
+
+        return $result;
     }
 }
