@@ -1,9 +1,9 @@
 <?php
 namespace Core;
+
 /**
  * Main application Singleton class
  */
-
 final class CApplication
 {
     private static $instance;
