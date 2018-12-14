@@ -37,6 +37,7 @@ final class CApplication
     private function _loadConfiguration()
     {
         include_once(_DOCUMENT_ROOT_ .'/core/config.php');
+        $_APP_['DOCUMENT_ROOT'] = _DOCUMENT_ROOT_;
 
         $result = $_APP_;
 
