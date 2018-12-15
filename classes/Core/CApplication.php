@@ -1,6 +1,8 @@
 <?php
 namespace Core;
 
+use Core\Exceptions\CconfigurationException;
+
 /**
  * Main application Singleton class
  */
@@ -34,14 +36,27 @@ final class CApplication
     {
     }
 
+    /**
+     * @return array
+     */
     private function _loadConfiguration()
     {
-        include_once(_DOCUMENT_ROOT_ .'/core/config.php');
-        $_APP_['DOCUMENT_ROOT'] = _DOCUMENT_ROOT_;
+        $configFilePath = _DOCUMENT_ROOT_ .'/core/config.php';
+        if (file_exists($configFilePath)) {
+            include_once($configFilePath);
+            $_APP_['DOCUMENT_ROOT'] = _DOCUMENT_ROOT_;
 
-        $result = $_APP_;
+            $result = $_APP_;
 
-        return $result;
+            return $result;
+        } else {
+            $error = [
+                'message'           => 'Configuration file does not exist.',
+                'configFilePath'    => $configFilePath,
+                'code'              => 1000,
+            ];
+            throw new CConfigurationException($error);
+        }
     }
 
     /**
@@ -54,7 +69,16 @@ final class CApplication
         if(is_null($prop)) {
             $result = $this->_CONFIGURATION;
         } else {
-            $result = $this->_CONFIGURATION[$prop];
+            if (array_key_exists($prop, $this->_CONFIGURATION)) {
+                $result = $this->_CONFIGURATION[$prop];
+            } else {
+                $error = [
+                    'message'   => 'Configuration property does not exist.',
+                    'prop'      => $prop,
+                    'code'      => 1001,
+                ];
+                throw new CConfigurationException($error);
+            }
         }
 
         return $result;
