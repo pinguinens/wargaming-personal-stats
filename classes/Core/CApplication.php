@@ -44,9 +44,18 @@ final class CApplication
         return $result;
     }
 
-    public function getConfiguration() 
+    /**
+     * @param string $prop Property
+     * 
+     * @return mixed
+     */
+    public function getConfiguration(string $prop = null) 
     {
-        $result = $this->_CONFIGURATION;
+        if(is_null($prop)) {
+            $result = $this->_CONFIGURATION;
+        } else {
+            $result = $this->_CONFIGURATION[$prop];
+        }
 
         return $result;
     }
