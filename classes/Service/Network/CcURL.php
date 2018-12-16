@@ -9,10 +9,10 @@ class CcURL
     /**
      * @param string $url
      * @param array $params
-     * 
+     *
      * @return mixed
      */
-    public static function post(string $url, array $params)
+    public static function post(string $url, array $params = [])
     {
         $options = [
             CURLOPT_URL => $url,
@@ -35,7 +35,7 @@ class CcURL
     /**
      * @param string $url
      * @param array $params
-     * 
+     *
      * @return mixed
      */
     public static function get(string $url, array $params = [])
