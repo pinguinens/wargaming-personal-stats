@@ -1,7 +1,7 @@
 <?php
 namespace Entity\WargamingAPI\WoT;
 
-use Services\Network\CcURL;
+use Service\Network\CcURL;
 
 abstract class CBase
 {
