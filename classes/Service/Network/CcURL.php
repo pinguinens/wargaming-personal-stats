@@ -1,5 +1,5 @@
 <?php
-namespace Services\Network;
+namespace Service\Network;
 
 /**
  * cURL wrapper class
@@ -38,9 +38,13 @@ class CcURL
      * 
      * @return mixed
      */
-    public static function get(string $url, array $params)
+    public static function get(string $url, array $params = [])
     {
-        $ecodedURL = $url .'?'. http_build_query($params);
+        if (count($params) !== 0) {
+            $ecodedURL = $url .'?'. http_build_query($params);
+        } else {
+            $ecodedURL = $url;
+        }
         $options = [
             CURLOPT_URL => $ecodedURL,
             CURLOPT_RETURNTRANSFER => true,
