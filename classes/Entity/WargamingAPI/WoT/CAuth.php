@@ -9,7 +9,10 @@ class CAuth extends CBase
     private $_userAccount = [];
 
     /**
-     * @param
+     * @param array $authRespone Response from api
+     *
+     * @return null
+     * @throw \Core\Exceptions\CAPIException
      */
     private function _saveAccessTokenFile(array $authRespone)
     {
@@ -18,11 +21,11 @@ class CAuth extends CBase
         $filePath = $APPLICATION->getConfiguration('DOCUMENT_ROOT').'/cache/access_token.json';
         $writeResult = file_put_contents($filePath, $json);
 
-        if($writeResult === false) {
+        if ($writeResult === false) {
             $error = [
-                'message'   => 'Configuration property does not exist.',
-                'prop'      => $prop,
-                'code'      => 1001,
+                'message'   => 'Saving access token file was failed.',
+                'value'      => $json,
+                'code'      => 2000,
             ];
             throw new \Core\Exceptions\CAPIException($error);
         } else {
@@ -30,19 +33,32 @@ class CAuth extends CBase
         }
     }
 
-    private function _readAccessTokenFile() {
+    /**
+     * @return array
+     * @throw \Core\Exceptions\CAPIException
+     */
+    private function _readAccessTokenFile()
+    {
         global $APPLICATION;
         $filePath = $APPLICATION->getConfiguration('DOCUMENT_ROOT').'/cache/access_token.json';
         if (file_exists($filePath)) {
             $json = file_get_contents($filePath);
             $result = json_decode($json, true);
+        } else {
+            $error = [
+                'message'   => 'Access token file does not exist.',
+                'value'      => $json,
+                'code'      => 2001,
+            ];
+            throw new \Core\Exceptions\CAPIException($error);
         }
 
         return $result;
     }
 
     /**
-     * @param string $search Player nickname
+     * @return string
+     * @throw \Core\Exceptions\CAPIException
      */
     public function makeAuthLink()
     {
@@ -58,9 +74,17 @@ class CAuth extends CBase
         $openIDlink = json_decode($response, true);
         if ($openIDlink['status'] === 'ok') {
             $result = $openIDlink['data']['location'];
+        } else {
+            $error = [
+                'message' => $openIDlink['error']['message'],
+                'field' => $openIDlink['error']['field'],
+                'value' => $openIDlink['error']['value'],
+                'field' => $openIDlink['error']['code'],
+            ];
+            throw new \Core\Exceptions\CAPIException($error);
         }
 
-        return $result;
+        return $openIDlink;
     }
 
     public function checkAuth(array $getParams = [])
@@ -76,9 +100,26 @@ class CAuth extends CBase
 
             $this->_userAccount = $authRespone;
         } else {
-            $this->_userAccount = $this->_readAccessTokenFile();
+            try {
+                $this->_userAccount = $this->_readAccessTokenFile();
+            } catch (\Core\Exceptions\CAPIException $e) {
+                if ($e->getCode() === 2001) {
+                    $this->_userAccount = null;
+                } else {
+                    $error = [
+                        'message'   => 'Authentication was failed.',
+                        'code'      => 2002,
+                    ];
+                    throw new \Core\Exceptions\CAPIException($error);
+                }
+            }
         }
-        $result = $this->_userAccount;
+
+        if (is_null($this->_userAccount)) {
+            $result = false;
+        } else {
+            $result = $this->_userAccount;
+        }
 
         return $result;
     }
