@@ -9,7 +9,7 @@ use Core\Exceptions\CconfigurationException;
 final class CApplication
 {
     private static $instance;
-    private  $_CONFIGURATION = [];
+    private static $_CONFIGURATION = [];
 
     /**
      * @return CApplication
@@ -25,7 +25,7 @@ final class CApplication
 
     private function __construct()
     {
-        $this->_CONFIGURATION = $this->_loadConfiguration();
+        static::$_CONFIGURATION = static::_loadConfiguration();
     }
 
     private function __clone()
@@ -39,7 +39,7 @@ final class CApplication
     /**
      * @return array
      */
-    private function _loadConfiguration()
+    private static function _loadConfiguration()
     {
         $configFilePath = _DOCUMENT_ROOT_ .'/core/config.php';
         if (file_exists($configFilePath)) {
@@ -61,16 +61,16 @@ final class CApplication
 
     /**
      * @param string $prop Property
-     * 
+     *
      * @return mixed
      */
-    public function getConfiguration(string $prop = null) 
+    public static function getConfiguration(string $prop = null)
     {
-        if(is_null($prop)) {
-            $result = $this->_CONFIGURATION;
+        if (is_null($prop)) {
+            $result = static::$_CONFIGURATION;
         } else {
-            if (array_key_exists($prop, $this->_CONFIGURATION)) {
-                $result = $this->_CONFIGURATION[$prop];
+            if (array_key_exists($prop, static::$_CONFIGURATION)) {
+                $result = static::$_CONFIGURATION[$prop];
             } else {
                 $error = [
                     'message'   => 'Configuration property does not exist.',

@@ -1,6 +1,7 @@
 <?php
 namespace Entity\WargamingAPI\WoT;
 
+use Core\CApplication;
 use Service\Network\CcURL;
 
 abstract class CBase
@@ -26,14 +27,15 @@ abstract class CBase
 
     /**
      * @param array $options Options for method parameters
-     * 
+     *
      * @return array
      */
-    protected function _prepareParams(array $options) {
+    protected function _prepareParams(array $options)
+    {
         global $APPLICATION;
         $defaults = [
-            'application_id' => $APPLICATION->getConfiguration('APP_ID'),
-            'language' => $APPLICATION->getConfiguration('LANGUAGE'),
+            'application_id' => CApplication::getConfiguration('APP_ID'),
+            'language' => CApplication::getConfiguration('LANGUAGE'),
         ];
 
         $result = array_merge($defaults, $options);

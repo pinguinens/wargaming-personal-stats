@@ -1,6 +1,7 @@
 <?php
 namespace Entity\WargamingAPI\WoT;
 
+use Core\CApplication;
 use Entity\WargamingAPI\WoT\CBase;
 
 class CAuth extends CBase
@@ -16,9 +17,8 @@ class CAuth extends CBase
      */
     private function _saveAccessTokenFile(array $authRespone)
     {
-        global $APPLICATION;
         $json = json_encode($authRespone);
-        $filePath = $APPLICATION->getConfiguration('DOCUMENT_ROOT').'/cache/access_token.json';
+        $filePath = CApplication::getConfiguration('DOCUMENT_ROOT').'/cache/access_token.json';
         $writeResult = file_put_contents($filePath, $json);
 
         if ($writeResult === false) {
@@ -39,8 +39,7 @@ class CAuth extends CBase
      */
     private function _readAccessTokenFile()
     {
-        global $APPLICATION;
-        $filePath = $APPLICATION->getConfiguration('DOCUMENT_ROOT').'/cache/access_token.json';
+        $filePath = CApplication::getConfiguration('DOCUMENT_ROOT').'/cache/access_token.json';
         if (file_exists($filePath)) {
             $json = file_get_contents($filePath);
             $result = json_decode($json, true);
@@ -84,9 +83,16 @@ class CAuth extends CBase
             throw new \Core\Exceptions\CAPIException($error);
         }
 
-        return $openIDlink;
+        return $result;
     }
 
+
+    /**
+     * @param array $getParams GET parameters
+     *
+     * @return array
+     * @throw \Core\Exceptions\CAPIException
+     */
     public function checkAuth(array $getParams = [])
     {
         if (array_key_exists('access_token', $getParams)) {
