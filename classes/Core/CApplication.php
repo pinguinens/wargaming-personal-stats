@@ -14,7 +14,7 @@ final class CApplication
     /**
      * @return CApplication
      */
-    public static function getInstance(): CApplication
+    public static function makeInstance(): CApplication
     {
         if (null === static::$instance) {
             static::$instance = new static();
