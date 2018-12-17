@@ -65,7 +65,7 @@ class CAuth extends CBase
         $options = [
             'nofollow' => 1,
             'expires_at' => 1209599,
-            'redirect_uri' => 'https://0.0.0.0/'
+            'redirect_uri' => CApplication::getConfiguration('AUTH_REDIRECT_URI')
         ];
         $params = $this->_prepareParams($options);
 
@@ -86,6 +86,23 @@ class CAuth extends CBase
         return $result;
     }
 
+    /**
+     * @param string $authLink LInk to authentication page
+     */
+    public function followAuthLink(string $authLink = '')
+    {
+        if (strlen($authLink)>0) {
+            header('Location: '.$authLink);
+        }
+    }
+
+    /**
+     * Method authenticates user based on Wargaming.net ID
+     */
+    public function authUser()
+    {
+        $this->followAuthLink($this->makeAuthLink());
+    }
 
     /**
      * @param array $getParams GET parameters
