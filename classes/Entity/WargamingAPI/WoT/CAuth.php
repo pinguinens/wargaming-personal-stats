@@ -8,6 +8,9 @@ use Entity\WargamingAPI\WoT\CBase;
 class CAuth extends CBase
 {
     protected $method_block = 'auth';
+
+    private const EXPIRATION_DIFF = 1209600;
+
     private $_userAccount = [];
 
     /**
@@ -65,7 +68,7 @@ class CAuth extends CBase
         $method_name = 'login';
         $options = [
             'nofollow' => 1,
-            'expires_at' => 1209599,
+            'expires_at' => $this->EXPIRATION_DIFF,
             'redirect_uri' => CApplication::getConfiguration('AUTH_REDIRECT_URI')
         ];
         $params = $this->_prepareParams($options);
@@ -143,6 +146,59 @@ class CAuth extends CBase
             $result = false;
         } else {
             $result = $this->_userAccount;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     * @throw \Core\Exceptions\CAPIException
+     */
+    public function prolongateAccessToken() {
+        if (count($this->_userAccount) === 0) {
+            $this->_userAccount = $this->_readAccessTokenFile();
+        }
+
+        $currentTime = time();
+        $diff = $currentTime - $this->_userAccount['expires_at'];
+
+        if ($diff >= $this::EXPIRATION_DIFF) {
+            $error = [
+                'message' => 'Access token was experied.',
+                'value' => $this->_userAccount,
+                'field' => 'diff',
+                'code' => 2004,
+            ];
+            throw new \Core\Exceptions\CAPIException($error);
+        }
+
+        if ($diff < $this::EXPIRATION_DIFF) {
+            $method_name = 'prolongate';
+            $options = [
+                'access_token' => $this->_userAccount['access_token'],
+                'expires_at' => $this::EXPIRATION_DIFF,
+            ];
+            $params = $this->_prepareParams($options);
+            $response = $this->_api($method_name, $params);
+
+            $authRespone = json_decode($response, true);
+            if ($authRespone['status'] === 'ok') {
+                $openID = $authRespone['data'];
+                $newAccessToken = array_merge($this->_userAccount, $openID);
+                $this->_saveAccessTokenFile($newAccessToken);
+    
+                $this->_userAccount = $newAccessToken;
+                $result = $this->_userAccount;
+            } else {
+                $error = [
+                    'message' => $authRespone['error']['message'],
+                    'field' => $authRespone['error']['field'],
+                    'value' => $authRespone['error']['value'],
+                    'field' => $authRespone['error']['code'],
+                ];
+                throw new \Core\Exceptions\CAPIException($error);
+            }
         }
 
         return $result;
