@@ -12,13 +12,19 @@ final class CConfigurationException extends \Exception
      */
     public function __construct(array $error)
     {
-        parent::__construct($error['message'], $error['code']);
+        $error['message'] = (array_key_exists('message', $error))
+            ? $error['message']
+            : null;
+        $error['code'] = (array_key_exists('code', $error))
+            ? $error['code']
+            : null;
         $this->prop = (array_key_exists('prop', $error))
             ? $error['prop']
             : null;
         $this->configFilePath = (array_key_exists('configFilePath', $error))
             ? $error['configFilePath']
             : null;
+        parent::__construct($error['message'], $error['code']);
     }
 
     /**

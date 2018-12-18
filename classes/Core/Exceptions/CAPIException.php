@@ -12,9 +12,15 @@ final class CAPIException extends \Exception
      */
     public function __construct(array $error)
     {
-        parent::__construct($error['message'], $error['code']);
+        $error['message'] = (array_key_exists('message', $error))
+            ? $error['message']
+            : null;
+        $error['code'] = (array_key_exists('code', $error))
+            ? $error['code']
+            : null;
         $this->field = $error['field'];
         $this->value = $error['value'];
+        parent::__construct($error['message'], $error['code']);
     }
 
     /**
