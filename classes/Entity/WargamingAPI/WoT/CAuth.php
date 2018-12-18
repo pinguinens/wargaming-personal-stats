@@ -2,6 +2,7 @@
 namespace Entity\WargamingAPI\WoT;
 
 use Core\CApplication;
+use Service\Network\CHeader;
 use Entity\WargamingAPI\WoT\CBase;
 
 class CAuth extends CBase
@@ -92,7 +93,7 @@ class CAuth extends CBase
     public function followAuthLink(string $authLink = '')
     {
         if (strlen($authLink)>0) {
-            header('Location: '.$authLink);
+            CHeader::followToLocation($authLink);
         }
     }
 
