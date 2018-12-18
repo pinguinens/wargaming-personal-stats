@@ -29,8 +29,10 @@ abstract class CBase
             ];
             throw new \Core\Exceptions\CAPIException($error);
         } else {
-            return $result;
+            $result = $response;
         }
+
+        return $result;
     }
 
     /**
