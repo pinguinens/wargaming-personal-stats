@@ -20,9 +20,17 @@ abstract class CBase
     protected function _api(string $method_name, array $params)
     {
         $url = "{$this->protocol}://{$this->server}/{$this->API_name}/{$this->method_block}/{$method_name}/";
-        $result = CcURL::post($url, $params);
+        $response = CcURL::post($url, $params);
 
-        return $result;
+        if (is_null($response)) {
+            $error = [
+                'message'   => 'API request was failed.',
+                'code'      => 2003,
+            ];
+            throw new \Core\Exceptions\CAPIException($error);
+        } else {
+            return $result;
+        }
     }
 
     /**
