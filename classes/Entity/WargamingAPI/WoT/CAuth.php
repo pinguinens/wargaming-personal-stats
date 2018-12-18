@@ -142,7 +142,7 @@ class CAuth extends CBase
             }
         }
 
-        if (is_null($this->_userAccount)) {
+        if (count($this->_userAccount) === 0) {
             $result = false;
         } else {
             $result = $this->_userAccount;
