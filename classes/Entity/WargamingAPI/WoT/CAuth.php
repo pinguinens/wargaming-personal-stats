@@ -103,7 +103,7 @@ class CAuth extends CBase
     /**
      * Method authenticates user based on Wargaming.net ID
      */
-    public function authUser()
+    public function loginUser()
     {
         $this->followAuthLink($this->makeAuthLink());
     }
@@ -117,6 +117,19 @@ class CAuth extends CBase
             $result = $this->_userAccount['access_token'];
         } else {
             $result = null;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLogin() {
+        if (array_key_exists('access_token', $this->_userAccount)) {
+            $result = true;
+        } else {
+            $result = false;
         }
 
         return $result;
