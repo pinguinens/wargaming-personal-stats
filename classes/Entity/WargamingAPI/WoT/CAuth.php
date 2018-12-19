@@ -154,49 +154,6 @@ class CAuth extends CBase
      * @return array
      * @throw \Core\Exceptions\CAPIException
      */
-    public function checkAuth(array $getParams = [])
-    {
-        if (array_key_exists('access_token', $getParams)) {
-            $authRespone = [
-                'access_token' => $getParams['access_token'],
-                'nickname' => $getParams['nickname'],
-                'account_id' => $getParams['account_id'],
-                'expires_at' => $getParams['expires_at'],
-            ];
-            $this->_saveAccessTokenFile($authRespone);
-
-            $this->_userAccount = $authRespone;
-        } else {
-            try {
-                $this->_userAccount = $this->_readAccessTokenFile();
-            } catch (\Core\Exceptions\CAPIException $e) {
-                if ($e->getCode() === 2001) {
-                    $this->_userAccount = null;
-                } else {
-                    $error = [
-                        'message'   => 'Authentication was failed.',
-                        'code'      => 2002,
-                    ];
-                    throw new \Core\Exceptions\CAPIException($error);
-                }
-            }
-        }
-
-        if (count($this->_userAccount) === 0) {
-            $result = false;
-        } else {
-            $result = $this->_userAccount;
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param array $getParams GET parameters
-     *
-     * @return array
-     * @throw \Core\Exceptions\CAPIException
-     */
     public static function saveNewAccessToken(array $getParams = [])
     {
         if (array_key_exists('access_token', $getParams)) {
