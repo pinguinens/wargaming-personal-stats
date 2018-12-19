@@ -260,4 +260,18 @@ class CAuth extends CBase
 
         return $result;
     }
+
+    /**
+     * @return array|null
+     */
+    public function getAuthInfo()
+    {
+        if (array_key_exists('access_token', $this->_userAccount)) {
+            $result = $this->_userAccount;
+        } else {
+            $result = null;
+        }
+
+        return $result;
+    }
 }
