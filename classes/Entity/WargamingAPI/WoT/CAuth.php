@@ -209,12 +209,14 @@ class CAuth extends CBase
             static::_saveAccessTokenFile($authRespone);
 
             $result = $authRespone;
-        } else {
-            $error = [
+        } else if (array_key_exists('status', $getParams) && $getParams['status'] === 'error') {
+                $error = [
                 'message' => $getParams['message'],
                 'code' => $getParams['code'],
             ];
             throw new \Core\Exceptions\CAPIException($error);
+        } else {
+            $result = null;
         }
 
         return $result;
