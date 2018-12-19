@@ -5,7 +5,7 @@ use Entity\WargamingAPI\WoT\CBase;
 
 class CAccount extends CBase
 {
-    protected $method_block = 'account';
+    protected static $method_block = 'account';
 
     private $_AuthInfo = [
         'access_token' => '',
@@ -24,16 +24,16 @@ class CAccount extends CBase
     /**
      * @param string $search Player nickname
      */
-    public function getPlayer(string $search)
+    public static function getPlayer(string $search)
     {
         $method_name = 'list';
         $options = [
             'search' => $search,
             'type' => 'exact',
         ];
-        $params = $this->_prepareParams($options);
+        $params = static::_prepareParams($options);
 
-        $result = $this->_api($method_name, $params);
+        $result = static::_api($method_name, $params);
 
         return $result;
     }

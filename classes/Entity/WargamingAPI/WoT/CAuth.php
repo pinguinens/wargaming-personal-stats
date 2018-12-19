@@ -7,7 +7,7 @@ use Entity\WargamingAPI\WoT\CBase;
 
 class CAuth extends CBase
 {
-    protected $method_block = 'auth';
+    protected static $method_block = 'auth';
 
     private const EXPIRATION_DIFF = 1209600;
 
@@ -82,9 +82,9 @@ class CAuth extends CBase
             'expires_at' => $this->EXPIRATION_DIFF,
             'redirect_uri' => CApplication::getConfiguration('AUTH_REDIRECT_URI')
         ];
-        $params = $this->_prepareParams($options);
+        $params = static::_prepareParams($options);
 
-        $response = $this->_api($method_name, $params);
+        $response = static::_api($method_name, $params);
         $openIDlink = json_decode($response, true);
         if ($openIDlink['status'] === 'ok') {
             $result = $openIDlink['data']['location'];
@@ -189,14 +189,14 @@ class CAuth extends CBase
                 'access_token' => $this->_userAccount['access_token'],
                 'expires_at' => $this::EXPIRATION_DIFF,
             ];
-            $params = $this->_prepareParams($options);
-            $response = $this->_api($method_name, $params);
+            $params = static::_prepareParams($options);
+            $response = static::_api($method_name, $params);
 
             $authRespone = json_decode($response, true);
             if ($authRespone['status'] === 'ok') {
                 $openID = $authRespone['data'];
                 $newAccessToken = array_merge($this->_userAccount, $openID);
-                $this->_saveAccessTokenFile($newAccessToken);
+                static::_saveAccessTokenFile($newAccessToken);
     
                 $this->_userAccount = $newAccessToken;
                 $result = $this->_userAccount;
@@ -224,13 +224,13 @@ class CAuth extends CBase
         $options = [
             'access_token' => $this->_userAccount['access_token'],
         ];
-        $params = $this->_prepareParams($options);
-        $response = $this->_api($method_name, $params);
+        $params = static::_prepareParams($options);
+        $response = static::_api($method_name, $params);
 
         $APIrespone = json_decode($response, true);
         if ($APIrespone['status'] === 'ok') {
             $newAccessToken = [];
-            $this->_saveAccessTokenFile($newAccessToken);
+            static::_saveAccessTokenFile($newAccessToken);
 
             $this->_userAccount = $newAccessToken;
             $result = $this->_userAccount;

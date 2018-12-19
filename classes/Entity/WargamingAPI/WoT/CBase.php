@@ -6,10 +6,10 @@ use Service\Network\CcURL;
 
 abstract class CBase
 {
-    protected $protocol = 'https';
-    protected $server = 'api.worldoftanks.ru';
-    protected $API_name = 'wot';
-    protected $method_block = '';
+    protected static $protocol = 'https';
+    protected static $server = 'api.worldoftanks.ru';
+    protected static $API_name = 'wot';
+    protected static $method_block = '';
 
     /**
      * @param string $method_name Method for execution
@@ -17,9 +17,9 @@ abstract class CBase
      *
      * @return mixed
      */
-    protected function _api(string $method_name, array $params)
+    protected static function _api(string $method_name, array $params)
     {
-        $url = "{$this->protocol}://{$this->server}/{$this->API_name}/{$this->method_block}/{$method_name}/";
+        $url = static::$protocol.'://'.static::$server.'/'.static::$API_name.'/'.static::$method_block.'/'.$method_name.'/';
         $response = CcURL::post($url, $params);
 
         if (is_null($response)) {
@@ -40,9 +40,8 @@ abstract class CBase
      *
      * @return array
      */
-    protected function _prepareParams(array $options)
+    protected static function _prepareParams(array $options)
     {
-        global $APPLICATION;
         $defaults = [
             'application_id' => CApplication::getConfiguration('APP_ID'),
             'language' => CApplication::getConfiguration('LANGUAGE'),
