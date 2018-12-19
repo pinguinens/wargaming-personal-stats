@@ -109,6 +109,20 @@ class CAuth extends CBase
     }
 
     /**
+     * @return array|null
+     */
+
+    public function getAccessToken() {
+        if (array_key_exists('access_token', $this->_userAccount)) {
+            $result = $this->_userAccount['access_token'];
+        } else {
+            $result = null;
+        }
+
+        return $result;
+    }
+
+    /**
      * @param array $getParams GET parameters
      *
      * @return array
