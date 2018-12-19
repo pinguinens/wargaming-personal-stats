@@ -13,4 +13,12 @@ class CHeader
     {
         header('Location: '. $url);
     }
+
+    /**
+     * Reloads current script
+     */
+    public static function reload()
+    {
+        header('Location: /');
+    }
 }
