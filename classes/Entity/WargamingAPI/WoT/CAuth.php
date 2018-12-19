@@ -120,21 +120,6 @@ class CAuth extends CBase
     }
 
     /**
-     * @return array|null
-     */
-
-    public function getAccessToken()
-    {
-        if (array_key_exists('access_token', $this->_userAccount)) {
-            $result = $this->_userAccount['access_token'];
-        } else {
-            $result = null;
-        }
-
-        return $result;
-    }
-
-    /**
      * @return bool
      */
     public function isLogin()
@@ -185,10 +170,6 @@ class CAuth extends CBase
      */
     public function prolongateAccessToken()
     {
-        if (count($this->_userAccount) === 0) {
-            $this->_userAccount = $this->_readAccessTokenFile();
-        }
-
         $currentTime = time();
         $diff = $currentTime - $this->_userAccount['expires_at'];
 
@@ -239,10 +220,6 @@ class CAuth extends CBase
      */
     public function logoutUser()
     {
-        if (count($this->_userAccount) === 0) {
-            $this->_userAccount = $this->_readAccessTokenFile();
-        }
-
         $method_name = 'logout';
         $options = [
             'access_token' => $this->_userAccount['access_token'],
@@ -265,6 +242,20 @@ class CAuth extends CBase
                 'field' => $authRespone['error']['code'],
             ];
             throw new \Core\Exceptions\CAPIException($error);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getAccessToken()
+    {
+        if (array_key_exists('access_token', $this->_userAccount)) {
+            $result = $this->_userAccount['access_token'];
+        } else {
+            $result = null;
         }
 
         return $result;
