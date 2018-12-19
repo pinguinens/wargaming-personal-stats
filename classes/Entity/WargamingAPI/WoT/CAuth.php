@@ -19,7 +19,7 @@ class CAuth extends CBase
      * @return null
      * @throw \Core\Exceptions\CAPIException
      */
-    private function _saveAccessTokenFile(array $authRespone)
+    private static function _saveAccessTokenFile(array $authRespone)
     {
         $json = json_encode($authRespone);
         $filePath = CApplication::getConfiguration('DOCUMENT_ROOT').'/cache/access_token.json';
@@ -41,7 +41,7 @@ class CAuth extends CBase
      * @return array
      * @throw \Core\Exceptions\CAPIException
      */
-    private function _readAccessTokenFile()
+    private static function _readAccessTokenFile()
     {
         $filePath = CApplication::getConfiguration('DOCUMENT_ROOT').'/cache/access_token.json';
         if (file_exists($filePath)) {
@@ -59,7 +59,8 @@ class CAuth extends CBase
         return $result;
     }
 
-    public function __construct() {
+    public function __construct()
+    {
         try {
             $this->_userAccount = $this->_readAccessTokenFile();
         } catch (\Core\Exceptions\CAPIException $e) {
@@ -122,7 +123,8 @@ class CAuth extends CBase
      * @return array|null
      */
 
-    public function getAccessToken() {
+    public function getAccessToken()
+    {
         if (array_key_exists('access_token', $this->_userAccount)) {
             $result = $this->_userAccount['access_token'];
         } else {
@@ -135,7 +137,8 @@ class CAuth extends CBase
     /**
      * @return bool
      */
-    public function isLogin() {
+    public function isLogin()
+    {
         if (array_key_exists('access_token', $this->_userAccount)) {
             $result = true;
         } else {
@@ -183,6 +186,35 @@ class CAuth extends CBase
             $result = false;
         } else {
             $result = $this->_userAccount;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array $getParams GET parameters
+     *
+     * @return array
+     * @throw \Core\Exceptions\CAPIException
+     */
+    public static function saveNewAccessToken(array $getParams = [])
+    {
+        if (array_key_exists('access_token', $getParams)) {
+            $authRespone = [
+                'access_token' => $getParams['access_token'],
+                'nickname' => $getParams['nickname'],
+                'account_id' => $getParams['account_id'],
+                'expires_at' => $getParams['expires_at'],
+            ];
+            static::_saveAccessTokenFile($authRespone);
+
+            $result = $authRespone;
+        } else {
+            $error = [
+                'message' => $getParams['message'],
+                'code' => $getParams['code'],
+            ];
+            throw new \Core\Exceptions\CAPIException($error);
         }
 
         return $result;
