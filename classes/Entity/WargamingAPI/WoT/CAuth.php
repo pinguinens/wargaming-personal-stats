@@ -155,7 +155,8 @@ class CAuth extends CBase
      * @return array
      * @throw \Core\Exceptions\CAPIException
      */
-    public function prolongateAccessToken() {
+    public function prolongateAccessToken()
+    {
         if (count($this->_userAccount) === 0) {
             $this->_userAccount = $this->_readAccessTokenFile();
         }
@@ -199,6 +200,43 @@ class CAuth extends CBase
                 ];
                 throw new \Core\Exceptions\CAPIException($error);
             }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     * @throw \Core\Exceptions\CAPIException
+     */
+    public function logoutUser()
+    {
+        if (count($this->_userAccount) === 0) {
+            $this->_userAccount = $this->_readAccessTokenFile();
+        }
+
+        $method_name = 'logout';
+        $options = [
+            'access_token' => $this->_userAccount['access_token'],
+        ];
+        $params = $this->_prepareParams($options);
+        $response = $this->_api($method_name, $params);
+
+        $APIrespone = json_decode($response, true);
+        if ($APIrespone['status'] === 'ok') {
+            $newAccessToken = [];
+            $this->_saveAccessTokenFile($newAccessToken);
+
+            $this->_userAccount = $newAccessToken;
+            $result = $this->_userAccount;
+        } else {
+            $error = [
+                'message' => $authRespone['error']['message'],
+                'field' => $authRespone['error']['field'],
+                'value' => $authRespone['error']['value'],
+                'field' => $authRespone['error']['code'],
+            ];
+            throw new \Core\Exceptions\CAPIException($error);
         }
 
         return $result;
