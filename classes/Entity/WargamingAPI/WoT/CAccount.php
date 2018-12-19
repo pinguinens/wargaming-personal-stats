@@ -13,6 +13,9 @@ class CAccount extends CBase
         'account_id' => '',
     ];
 
+    /**
+     * @param array $AuthInfo Authoriztion info
+     */
     public function __construct(array $AuthInfo) {
         $this->_AuthInfo = [
             'access_token' => $AuthInfo['access_token'],
