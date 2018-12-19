@@ -59,6 +59,16 @@ class CAuth extends CBase
         return $result;
     }
 
+    public function __construct() {
+        try {
+            $this->_userAccount = $this->_readAccessTokenFile();
+        } catch (\Core\Exceptions\CAPIException $e) {
+            if ($e->getCode() === 2001) {
+                $this->_userAccount = [];
+            }
+        }
+    }
+
     /**
      * @return string
      * @throw \Core\Exceptions\CAPIException
