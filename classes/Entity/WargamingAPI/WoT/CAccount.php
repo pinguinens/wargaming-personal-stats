@@ -7,6 +7,20 @@ class CAccount extends CBase
 {
     protected $method_block = 'account';
 
+    private $_AuthInfo = [
+        'access_token' => '',
+        'nickname' => '',
+        'account_id' => '',
+    ];
+
+    public function __construct(Entity\WargamingAPI\WoT\CAuth $AuthInfo) {
+        $this->_AuthInfo = [
+            'access_token' => $AuthInfo['access_token'],
+            'nickname' => $AuthInfo['nickname'],
+            'account_id' => $AuthInfo['account_id'],
+        ];
+    }
+
     /**
      * @param string $search Player nickname
      */
