@@ -82,21 +82,8 @@ class CAuth extends CBase
             'expires_at' => $this->EXPIRATION_DIFF,
             'redirect_uri' => CApplication::getConfiguration('AUTH_REDIRECT_URI')
         ];
-        $params = static::_prepareParams($options);
-
-        $response = static::_api($method_name, $params);
-        $openIDlink = json_decode($response, true);
-        if ($openIDlink['status'] === 'ok') {
-            $result = $openIDlink['data']['location'];
-        } else {
-            $error = [
-                'message' => $openIDlink['error']['message'],
-                'field' => $openIDlink['error']['field'],
-                'value' => $openIDlink['error']['value'],
-                'field' => $openIDlink['error']['code'],
-            ];
-            throw new \Core\Exceptions\CAPIException($error);
-        }
+        $handledResponse = static::_makeRequest($method_name, $options);
+        $result = $handledResponse['location'];
 
         return $result;
     }
@@ -189,26 +176,12 @@ class CAuth extends CBase
                 'access_token' => $this->_userAccount['access_token'],
                 'expires_at' => $this::EXPIRATION_DIFF,
             ];
-            $params = static::_prepareParams($options);
-            $response = static::_api($method_name, $params);
+            $handledResponse = static::_makeRequest($method_name, $options);
+            $newAccessToken = array_merge($this->_userAccount, $handledResponse);
+            static::_saveAccessTokenFile($newAccessToken);
 
-            $authRespone = json_decode($response, true);
-            if ($authRespone['status'] === 'ok') {
-                $openID = $authRespone['data'];
-                $newAccessToken = array_merge($this->_userAccount, $openID);
-                static::_saveAccessTokenFile($newAccessToken);
-    
-                $this->_userAccount = $newAccessToken;
-                $result = $this->_userAccount;
-            } else {
-                $error = [
-                    'message' => $authRespone['error']['message'],
-                    'field' => $authRespone['error']['field'],
-                    'value' => $authRespone['error']['value'],
-                    'field' => $authRespone['error']['code'],
-                ];
-                throw new \Core\Exceptions\CAPIException($error);
-            }
+            $this->_userAccount = $newAccessToken;
+            $result = $this->_userAccount;
         }
 
         return $result;
@@ -224,25 +197,12 @@ class CAuth extends CBase
         $options = [
             'access_token' => $this->_userAccount['access_token'],
         ];
-        $params = static::_prepareParams($options);
-        $response = static::_api($method_name, $params);
+        $handledResponse = static::_makeRequest($method_name, $options);
+        $newAccessToken = [];
+        static::_saveAccessTokenFile($newAccessToken);
 
-        $APIrespone = json_decode($response, true);
-        if ($APIrespone['status'] === 'ok') {
-            $newAccessToken = [];
-            static::_saveAccessTokenFile($newAccessToken);
-
-            $this->_userAccount = $newAccessToken;
-            $result = $this->_userAccount;
-        } else {
-            $error = [
-                'message' => $authRespone['error']['message'],
-                'field' => $authRespone['error']['field'],
-                'value' => $authRespone['error']['value'],
-                'field' => $authRespone['error']['code'],
-            ];
-            throw new \Core\Exceptions\CAPIException($error);
-        }
+        $this->_userAccount = $newAccessToken;
+        $result = $this->_userAccount;
 
         return $result;
     }

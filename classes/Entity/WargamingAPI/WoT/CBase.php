@@ -3,6 +3,7 @@ namespace Entity\WargamingAPI\WoT;
 
 use Core\CApplication;
 use Service\Network\CcURL;
+use \Core\Exceptions\CAPIException;
 
 abstract class CBase
 {
@@ -27,7 +28,7 @@ abstract class CBase
                 'message'   => 'API request was failed.',
                 'code'      => 2003,
             ];
-            throw new \Core\Exceptions\CAPIException($error);
+            throw new CAPIException($error);
         } else {
             $result = $response;
         }
@@ -48,6 +49,43 @@ abstract class CBase
         ];
 
         $result = array_merge($defaults, $options);
+        return $result;
+    }
+
+    /**
+     * @param string $apiResponse Response from Wargaming API
+     *
+     * @return array
+     */
+    protected static function _handleResponse(string $apiResponse)
+    {
+        $responseArray = json_decode($apiResponse, true);
+        if ($responseArray['status'] === 'ok') {
+            $result = $responseArray['data'];
+        } else {
+            $error = [
+                'message' => $responseArray['error']['message'],
+                'field' => $responseArray['error']['field'],
+                'value' => $responseArray['error']['value'],
+                'field' => $responseArray['error']['code'],
+            ];
+            throw new CAPIException($error);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $apiResponse Response from Wargaming API
+     *
+     * @return array
+     */
+    protected static function _makeRequest(string $method_name, array $options)
+    {
+        $params = static::_prepareParams($options);
+        $response = static::_api($method_name, $params);
+        $result = static::_handleResponse($response);
+
         return $result;
     }
 }

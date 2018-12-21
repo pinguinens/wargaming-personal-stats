@@ -16,7 +16,8 @@ class CAccount extends CBase
     /**
      * @param array $AuthInfo Authoriztion info
      */
-    public function __construct(array $AuthInfo) {
+    public function __construct(array $AuthInfo)
+    {
         $this->_AuthInfo = [
             'access_token' => $AuthInfo['access_token'],
             'nickname' => $AuthInfo['nickname'],
@@ -26,7 +27,7 @@ class CAccount extends CBase
 
     /**
      * @param string $search Player nickname
-     * 
+     *
      * @return array
      */
     public static function getPlayer(string $search)
@@ -36,21 +37,8 @@ class CAccount extends CBase
             'search' => $search,
             'type' => 'exact',
         ];
-        $params = static::_prepareParams($options);
-        $response = static::_api($method_name, $params);
-
-        $APIrespone = json_decode($response, true);
-        if ($APIrespone['status'] === 'ok') {
-            $result = $APIrespone['data'][0];
-        } else {
-            $error = [
-                'message' => $authRespone['error']['message'],
-                'field' => $authRespone['error']['field'],
-                'value' => $authRespone['error']['value'],
-                'field' => $authRespone['error']['code'],
-            ];
-            throw new \Core\Exceptions\CAPIException($error);
-        }
+        $handledResponse = static::_makeRequest($method_name, $options);
+        $result = reset($handledResponse);
 
         return $result;
     }
@@ -58,7 +46,7 @@ class CAccount extends CBase
     /**
      * @return array
      */
-    public function getCommonInfo()
+    public function getCommonInfo(int $account_id = null)
     {
         $method_name = 'info';
         $fields = [
@@ -71,25 +59,16 @@ class CAccount extends CBase
             'updated_at',
         ];
         $options = [
-            'access_token' => $this->_AuthInfo['access_token'],
-            'account_id' => $this->_AuthInfo['account_id'],
+            'access_token' => (is_null($account_id))
+                ? $this->_AuthInfo['access_token']
+                : '',
+            'account_id' => (is_null($account_id))
+                ? $this->_AuthInfo['account_id']
+                : $account_id,
             'fields' => implode(',', $fields),
         ];
-        $params = static::_prepareParams($options);
-        $response = static::_api($method_name, $params);
-
-        $APIrespone = json_decode($response, true);
-        if ($APIrespone['status'] === 'ok') {
-            $result = reset($APIrespone['data']);
-        } else {
-            $error = [
-                'message' => $authRespone['error']['message'],
-                'field' => $authRespone['error']['field'],
-                'value' => $authRespone['error']['value'],
-                'field' => $authRespone['error']['code'],
-            ];
-            throw new \Core\Exceptions\CAPIException($error);
-        }
+        $handledResponse = static::_makeRequest($method_name, $options);
+        $result = reset($handledResponse);
 
         return $result;
     }
