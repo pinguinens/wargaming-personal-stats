@@ -37,8 +37,20 @@ class CAccount extends CBase
             'type' => 'exact',
         ];
         $params = static::_prepareParams($options);
+        $response = static::_api($method_name, $params);
 
-        $result = static::_api($method_name, $params);
+        $APIrespone = json_decode($response, true);
+        if ($APIrespone['status'] === 'ok') {
+            $result = $APIrespone['data'][0];
+        } else {
+            $error = [
+                'message' => $authRespone['error']['message'],
+                'field' => $authRespone['error']['field'],
+                'value' => $authRespone['error']['value'],
+                'field' => $authRespone['error']['code'],
+            ];
+            throw new \Core\Exceptions\CAPIException($error);
+        }
 
         return $result;
     }
@@ -46,7 +58,7 @@ class CAccount extends CBase
     /**
      * @param string $search Player nickname
      * 
-     * @todo make fields through array
+     * @return array
      */
     public function getCommonInfo()
     {
@@ -57,8 +69,20 @@ class CAccount extends CBase
             'fields' => 'clan_id,client_language,created_at,global_rating,last_battle_time,logout_at,updated_at',
         ];
         $params = static::_prepareParams($options);
+        $response = static::_api($method_name, $params);
 
-        $result = static::_api($method_name, $params);
+        $APIrespone = json_decode($response, true);
+        if ($APIrespone['status'] === 'ok') {
+            $result = reset($APIrespone['data']);
+        } else {
+            $error = [
+                'message' => $authRespone['error']['message'],
+                'field' => $authRespone['error']['field'],
+                'value' => $authRespone['error']['value'],
+                'field' => $authRespone['error']['code'],
+            ];
+            throw new \Core\Exceptions\CAPIException($error);
+        }
 
         return $result;
     }
