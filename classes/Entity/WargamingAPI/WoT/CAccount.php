@@ -56,8 +56,6 @@ class CAccount extends CBase
     }
 
     /**
-     * @param string $search Player nickname
-     * 
      * @return array
      */
     public function getCommonInfo()
