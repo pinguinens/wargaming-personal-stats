@@ -17,7 +17,7 @@ class CAuth extends CBase
      * @param array $authRespone Response from api
      *
      * @return null
-     * @throw \Core\Exceptions\CAPIException
+     * @throws \Core\Exceptions\CAPIException
      */
     private static function _saveAccessTokenFile(array $authRespone)
     {
@@ -39,7 +39,7 @@ class CAuth extends CBase
 
     /**
      * @return array
-     * @throw \Core\Exceptions\CAPIException
+     * @throws \Core\Exceptions\CAPIException
      */
     private static function _readAccessTokenFile()
     {
@@ -72,7 +72,7 @@ class CAuth extends CBase
 
     /**
      * @return string
-     * @throw \Core\Exceptions\CAPIException
+     * @throws \Core\Exceptions\CAPIException
      */
     public function makeAuthLink()
     {
@@ -137,7 +137,7 @@ class CAuth extends CBase
      * @param array $getParams GET parameters
      *
      * @return array
-     * @throw \Core\Exceptions\CAPIException
+     * @throws \Core\Exceptions\CAPIException
      */
     public static function saveNewAccessToken(array $getParams = [])
     {
@@ -166,7 +166,7 @@ class CAuth extends CBase
 
     /**
      * @return array
-     * @throw \Core\Exceptions\CAPIException
+     * @throws \Core\Exceptions\CAPIException
      */
     public function prolongateAccessToken()
     {
@@ -216,7 +216,7 @@ class CAuth extends CBase
 
     /**
      * @return array
-     * @throw \Core\Exceptions\CAPIException
+     * @throws \Core\Exceptions\CAPIException
      */
     public function logoutUser()
     {

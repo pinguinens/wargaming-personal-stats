@@ -26,6 +26,8 @@ class CAccount extends CBase
 
     /**
      * @param string $search Player nickname
+     * 
+     * @return array
      */
     public static function getPlayer(string $search)
     {
@@ -43,6 +45,8 @@ class CAccount extends CBase
 
     /**
      * @param string $search Player nickname
+     * 
+     * @todo make fields through array
      */
     public function getCommonInfo()
     {
