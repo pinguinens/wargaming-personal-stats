@@ -63,10 +63,19 @@ class CAccount extends CBase
     public function getCommonInfo()
     {
         $method_name = 'info';
+        $fields = [
+            'clan_id',
+            'client_language',
+            'created_at',
+            'global_rating',
+            'last_battle_time',
+            'logout_at',
+            'updated_at',
+        ];
         $options = [
             'access_token' => $this->_AuthInfo['access_token'],
             'account_id' => $this->_AuthInfo['account_id'],
-            'fields' => 'clan_id,client_language,created_at,global_rating,last_battle_time,logout_at,updated_at',
+            'fields' => implode(',', $fields),
         ];
         $params = static::_prepareParams($options);
         $response = static::_api($method_name, $params);
