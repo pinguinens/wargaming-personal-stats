@@ -18,12 +18,15 @@ class CAccount extends CBase
      *
      * @return array
      */
-    private function _prepareFields(array $fields)
+    private function _prepareFields(array $fields = [], array $extra = [])
     {
         $result = [
             'access_token' => $this->_AuthInfo['access_token'],
             'account_id' => $this->_AuthInfo['account_id'],
             'fields' => implode(',', $fields),
+            'extra' => (count($extra) > 0)
+                ? implode(',', $extra)
+                : '',
         ];
         
         return $result;
@@ -108,6 +111,25 @@ class CAccount extends CBase
         $options = $this->_prepareFields($fields);
         $handledResponse = static::_makeRequest($method_name, $options);
         $result = reset($handledResponse)['private'];
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGarage()
+    {
+        $method_name = 'info';
+        $fields = [
+            'private.garage',
+        ];
+        $extra = [
+            'private.garage',
+        ];
+        $options = $this->_prepareFields($fields, $extra);
+        $handledResponse = static::_makeRequest($method_name, $options);
+        $result = reset($handledResponse)['private']['garage'];
 
         return $result;
     }

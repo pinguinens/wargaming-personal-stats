@@ -11,9 +11,16 @@ if (!is_null($newAccessToken)) {
 }
 
 $AUTH = new Entity\WargamingAPI\WoT\CAuth();
+
+// if ($_GET['logout'] = 'true') {
+//     $AUTH->logoutUser();
+//     Service\Network\CHeader::reload();
+// }1206869
+
 if (!$AUTH->isLogin()) {
     $AUTH->loginUser();
 } else {
-    $res = Entity\WargamingAPI\WoT\CAccount::getPlayer('Pinguinens');
+    $ACCOUNT = new Entity\WargamingAPI\WoT\CAccount($AUTH->getAuthInfo());
+    $res = $ACCOUNT->getGarage();
     var_dump($res);
 }
