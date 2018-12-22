@@ -44,6 +44,8 @@ class CAccount extends CBase
     }
 
     /**
+     * @param int $account_id Player's account id
+     * 
      * @return array
      */
     public function getCommonInfo(int $account_id = null)
