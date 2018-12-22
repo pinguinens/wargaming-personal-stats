@@ -45,7 +45,7 @@ class CAccount extends CBase
 
     /**
      * @param int $account_id Player's account id
-     * 
+     *
      * @return array
      */
     public function getCommonInfo(int $account_id = null)
@@ -71,6 +71,37 @@ class CAccount extends CBase
         ];
         $handledResponse = static::_makeRequest($method_name, $options);
         $result = reset($handledResponse);
+
+        return $result;
+    }
+
+    /**
+     * @param int $account_id Player's account id
+     *
+     * @return array
+     */
+    public function getEconomics(int $account_id = null)
+    {
+        $method_name = 'info';
+        $fields = [
+            'private.bonds',
+            'private.credits',
+            'private.free_xp',
+            'private.gold',
+            'private.is_premium',
+            'private.premium_expires_at',
+        ];
+        $options = [
+            'access_token' => (is_null($account_id))
+                ? $this->_AuthInfo['access_token']
+                : '',
+            'account_id' => (is_null($account_id))
+                ? $this->_AuthInfo['account_id']
+                : $account_id,
+            'fields' => implode(',', $fields),
+        ];
+        $handledResponse = static::_makeRequest($method_name, $options);
+        $result = reset($handledResponse)['private'];
 
         return $result;
     }
