@@ -76,11 +76,9 @@ class CAccount extends CBase
     }
 
     /**
-     * @param int $account_id Player's account id
-     *
      * @return array
      */
-    public function getEconomics(int $account_id = null)
+    public function getEconomics()
     {
         $method_name = 'info';
         $fields = [
@@ -92,12 +90,8 @@ class CAccount extends CBase
             'private.premium_expires_at',
         ];
         $options = [
-            'access_token' => (is_null($account_id))
-                ? $this->_AuthInfo['access_token']
-                : '',
-            'account_id' => (is_null($account_id))
-                ? $this->_AuthInfo['account_id']
-                : $account_id,
+            'access_token' => $this->_AuthInfo['access_token'],
+            'account_id' => $this->_AuthInfo['account_id'],
             'fields' => implode(',', $fields),
         ];
         $handledResponse = static::_makeRequest($method_name, $options);
