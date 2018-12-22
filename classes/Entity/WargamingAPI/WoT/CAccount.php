@@ -14,6 +14,22 @@ class CAccount extends CBase
     ];
 
     /**
+     * @param array $fields Fields request array
+     *
+     * @return array
+     */
+    private function _prepareFields(array $fields)
+    {
+        $result = [
+            'access_token' => $this->_AuthInfo['access_token'],
+            'account_id' => $this->_AuthInfo['account_id'],
+            'fields' => implode(',', $fields),
+        ];
+        
+        return $result;
+    }
+
+    /**
      * @param array $AuthInfo Authoriztion info
      */
     public function __construct(array $AuthInfo)
@@ -89,11 +105,7 @@ class CAccount extends CBase
             'private.is_premium',
             'private.premium_expires_at',
         ];
-        $options = [
-            'access_token' => $this->_AuthInfo['access_token'],
-            'account_id' => $this->_AuthInfo['account_id'],
-            'fields' => implode(',', $fields),
-        ];
+        $options = $this->_prepareFields($fields);
         $handledResponse = static::_makeRequest($method_name, $options);
         $result = reset($handledResponse)['private'];
 
