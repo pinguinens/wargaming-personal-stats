@@ -58,8 +58,8 @@ class CTanks extends CBase
             ? ''
             : $tank_id;
         $handledResponse = static::_makeRequest($method_name, $options);
-        $result = reset($handledResponse);
+        $result = reset($handledResponse)[0]['all'];
 
-        return $handledResponse;
+        return $result;
     }
 }
