@@ -11,6 +11,11 @@ abstract class CBase
     protected static $server = 'api.worldoftanks.ru';
     protected static $API_name = 'wot';
     protected static $method_block = '';
+    protected $_AuthInfo = [
+        'access_token' => '',
+        'nickname' => '',
+        'account_id' => '',
+    ];
 
     /**
      * @param string $method_name Method for execution
@@ -87,5 +92,36 @@ abstract class CBase
         $result = static::_handleResponse($response);
 
         return $result;
+    }
+
+    /**
+     * @param array $fields Fields request array
+     *
+     * @return array
+     */
+    protected function _prepareFields(array $fields = [], array $extra = [])
+    {
+        $result = [
+            'access_token' => $this->_AuthInfo['access_token'],
+            'account_id' => $this->_AuthInfo['account_id'],
+            'fields' => implode(',', $fields),
+            'extra' => (count($extra) > 0)
+                ? implode(',', $extra)
+                : '',
+        ];
+        
+        return $result;
+    }
+
+    /**
+     * @param array $AuthInfo Authoriztion info
+     */
+    public function __construct(array $AuthInfo)
+    {
+        $this->_AuthInfo = [
+            'access_token' => $AuthInfo['access_token'],
+            'nickname' => $AuthInfo['nickname'],
+            'account_id' => $AuthInfo['account_id'],
+        ];
     }
 }
